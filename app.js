@@ -18,7 +18,8 @@ MongoClient.connect('mongodb+srv://root:root@cluster0.vd09u.mongodb.net'
     })
 
 app.get('/', (req, res, next) => {
-    res.send('Select a collection');
+    res.render("index.html");
+    next();
 })
 
 app.param('collectionName', (req, res, next, collectionName) => {
