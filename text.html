@@ -329,7 +329,7 @@
                             body: JSON.stringify(orders),
                         })
                         let endProcess = await process;
-                        console.log(endProcess);
+                        console.log(endProcess).body.message;
                     } catch (error) {
                         console.log(error);
                     }
