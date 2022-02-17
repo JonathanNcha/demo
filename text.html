@@ -314,21 +314,22 @@
 
                 async checkout() {
                     let orders = {
-                        "checkoutName": document.getElementById("name").value,
-                        "checkoutPhone": document.getElementById("phone").value,
-                        "cartProduct": this.cart,
+                        checkoutName: document.getElementById("name").value,
+                        checkoutPhone: document.getElementById("phone").value,
+                        cartProduct: this.cart,
                     }
                     try {
                         let process = await fetch('https://cst-3145-cw.herokuapp.com/collection/Orders', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
                             },
                             mode: "cors",
-                            body: orders
+                            cache: "no-store",
+                            body: JSON.stringify(orders),
                         })
                         let endProcess = await process;
-                        console.log(endProcess);
+                        console.log(this.orders);
                     } catch (error) {
                         console.log(error);
                     }
