@@ -18,7 +18,7 @@ MongoClient.connect('mongodb+srv://root:root@cluster0.vd09u.mongodb.net'
     })
 
 app.get('/', (req, res, next) => {
-    res.render("text.html");
+    response.render("text.html");
     next();
 })
 
