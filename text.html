@@ -312,6 +312,19 @@
                     alert('Order Submitted!')
                 },
 
+                async updateSpaces(updateLesson) {
+                    let updateLessons = await fetch('https://cst-3145-cw.herokuapp.com/collection/Products', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        mode: "cors",
+                        cache: "no-store",
+                        body: JSON.stringify(orders),
+                    })
+                },
+
+
                 async checkout() {
                     let orders = {
                         checkoutName: document.getElementById("name").value,
@@ -329,8 +342,11 @@
                             body: JSON.stringify(orders),
                         })
                         let endProcess = await process;
-                        console.log(endProcess);
-                        console.log(message);
+                        let updateData = {
+                            availableSpace: this.cart
+                        }
+
+                        updateSpaces(updateData);
                     } catch (error) {
                         console.log(error);
                     }
