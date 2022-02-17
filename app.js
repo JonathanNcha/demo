@@ -5,10 +5,10 @@ const app = express();
 app.use(express.json());
 app.set('port', 3000);
 app.use((req, res, next) => {
-    
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.header("Access-Control-Allow-Headers", "*");
-    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Origin", "*");
     next();
 })
 
@@ -39,9 +39,11 @@ app.get('/collection/:collectionName', (req, res, next) => {
 app.post('/collection/:collectionName', (req, res, next) => {
     req.collection.insert(req.body, (e, results) => {
         if (e) return next(e)
-        res.send(results.ops)
+        let response = { "message": "success" }
+        res.send(response);
+        // console.log("fuck this shit")
     })
-    console.log(req.body);
+    // console.log(req.body);
 })
 
 const ObjectID = require('mongodb').ObjectID;
