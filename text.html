@@ -149,22 +149,23 @@
                 </div>
                 <div>
                     <h2>Checkout</h2>
+
                     <form @submit="checkForm">
                         <span>
                             <strong>Name:</strong>
-                            <input type="text" v-model="name" v-on:keypress="checkForm" v-on:keyup="checkForm"
+                            <input id="name" type="text" v-model="name" v-on:keypress="checkForm" v-on:keyup="checkForm"
                                 required />
 
                         </span>
                         <span>
                             <strong>Phone:</strong>
-                            <input type="number" v-model.number="phone" v-on:keypress="checkForm" v-on:keyup="checkForm"
-                                required />
+                            <input id="phone" type="number" v-model.number="phone" v-on:keypress="checkForm"
+                                v-on:keyup="checkForm" required />
 
                         </span>
                         <span>
-                            <button class="btn btn-primary btn-sm" type="submit" v-if="form"
-                                v-on:click="checkoutSuccess">Checkout</button>
+                            <button class="btn btn-primary btn-sm" type="submit" v-if="form" v-on:click="checkout"
+                                onclick="return false;">Checkout</button>
 
                             <button class="btn btn-primary btn-sm" v-else disabled="disabled">Checkout</button>
 
@@ -311,6 +312,24 @@
                     alert('Order Submitted!')
                 },
 
+                checkout() {
+                    fetch('https://cst-3145-cw.herokuapp.com/collection/Orders', {
+                        method: 'POST',
+                        body: JSON.stringify(this.any),
+                    }).then(
+                        function (response) {
+                            response.json();
+                        });
+                    let orders = {
+                        "checkoutName": document.getElementById("name").value,
+                        "checkoutPhone": document.getElementById("phone").value,
+                        "cartProduct": this.cart,
+                    }
+
+                    console.log(orders);
+
+                },
+
                 checkForm() {
                     let name = this.name;
                     let phone = this.phone;
@@ -336,7 +355,7 @@
                             });
                     })
             },
-            
+
             computed: {
                 sortedLessons() {
                     if (this.filter != 0)
