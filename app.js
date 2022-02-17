@@ -59,14 +59,15 @@ app.get('/collection/:collectionName/:id', (req, res, next) => {
 //update an object 
 
 app.put('/collection/:collectionName/:id', (req, res, next) => {
-    req.collection.update(
-        { _id: new ObjectID(req.params.id) },
-        { $set: req.body },
-        { safe: true, multi: false },
-        (e, result) => {
-            if (e) return next(e)
-            res.send(result.modifiedCount === 1 ? { msg: 'success' } : { msg: 'error' })
-        })
+    // req.collection.update(
+    //     { _id: new ObjectID(req.params.id) },
+    //     { $set: req.body },
+    //     { safe: true, multi: false },
+    //     (e, result) => {
+    //         if (e) return next(e)
+    //         res.send(result.modifiedCount === 1 ? { msg: 'success' } : { msg: 'error' })
+    //     })
+    console.log(req.body);
 })
 
 app.delete('/collection/:collectionName/:id', (req, res, next) => {
