@@ -18,7 +18,7 @@ MongoClient.connect('mongodb+srv://root:root@cluster0.vd09u.mongodb.net'
     })
 
 app.get('/', (req, res, next) => {
-   res.sendFile(path.join(__dirname, '/text.html'));
+   res.sendFile(path.join('text.html');
 })
 
 app.param('collectionName', (req, res, next, collectionName) => {
