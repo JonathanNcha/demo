@@ -1,12 +1,14 @@
+const { request } = require('express');
 const express = require('express');
 const app = express();
 
 app.use(express.json());
 app.set('port', 3000);
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Headers",'Origin,X-requested-With,Content-Type,Accept');
+    
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Allow-Origin", "*"); 
     next();
 })
 
@@ -19,7 +21,7 @@ MongoClient.connect('mongodb+srv://root:root@cluster0.vd09u.mongodb.net'
     })
 
 app.get('/', (req, res, next) => {
-    res.sendFile('text.html', { root: __dirname });
+    res.sendFile('text.html');
 })
 
 app.param('collectionName', (req, res, next, collectionName) => {
@@ -39,6 +41,7 @@ app.post('/collection/:collectionName', (req, res, next) => {
         if (e) return next(e)
         res.send(results.ops)
     })
+    console.log(req.body);
 })
 
 const ObjectID = require('mongodb').ObjectID;
@@ -94,5 +97,3 @@ app.put('/collection/:collectionName/:id/reduce/:name/:value', (req, res, next) 
 
 const port = process.env.PORT || 3000;
 app.listen(port);
-
-
