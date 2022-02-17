@@ -312,21 +312,29 @@
                     alert('Order Submitted!')
                 },
 
-                checkout() {
-                    fetch('https://cst-3145-cw.herokuapp.com/collection/Orders', {
-                        method: 'POST',
-                        body: JSON.stringify(this.any),
-                    }).then(
-                        function (response) {
-                            response.json();
-                        });
+                async checkout() {
                     let orders = {
                         "checkoutName": document.getElementById("name").value,
                         "checkoutPhone": document.getElementById("phone").value,
                         "cartProduct": this.cart,
                     }
+                    try {
+                        let process = await fetch('https://cst-3145-cw.herokuapp.com/collection/Orders', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            mode: "cors",
+                            body: orders
+                        })
+                        let endProcess = await process;
+                        console.log(endProcess);
+                    } catch (error) {
+                        console.log(error);
+                    }
 
-                    console.log(orders);
+
+                    // console.log(orders);
 
                 },
 
