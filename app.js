@@ -1,5 +1,6 @@
 const { request } = require('express');
 const express = require('express');
+const { ObjectId } = require('mongodb');
 const app = express();
 
 app.use(express.json());
@@ -9,6 +10,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.header("Access-Control-Allow-Headers", "*");
     res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', '*');
     next();
 })
 
@@ -59,15 +61,16 @@ app.get('/collection/:collectionName/:id', (req, res, next) => {
 //update an object 
 
 app.put('/collection/:collectionName/:id', (req, res, next) => {
-    // req.collection.update(
-    //     { _id: new ObjectID(req.params.id) },
-    //     { $set: req.body },
-    //     { safe: true, multi: false },
-    //     (e, result) => {
-    //         if (e) return next(e)
-    //         res.send(result.modifiedCount === 1 ? { msg: 'success' } : { msg: 'error' })
-    //     })
-    console.log(req.body);
+    let id = new ObjectId(req.params.id)
+    req.collection.update(
+        { _id: id },
+        { $set: req.body },
+        { safe: true, multi: false },
+        (e, result) => {
+            if (e) return next(e)
+            res.send(result.modifiedCount === 1 ? { msg: 'success' } : { msg: 'error' })
+        })
+    console.log(req.body)
 })
 
 app.delete('/collection/:collectionName/:id', (req, res, next) => {
