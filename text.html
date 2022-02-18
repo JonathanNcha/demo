@@ -99,7 +99,7 @@
                                     <p>Subject: {{lesson.title}}</p>
                                     <p>Location: {{lesson.location}}</p>
                                     <p>Price: {{lesson.price | currency}}</p>
-                                    <p>Spaces: {{lesson.availableSpace-cartCount(lesson.id)}}</p>
+                                    <p>availableSpace: {{lesson.availableSpace-cartCount(lesson.id)}}</p>
                                 </span>
                             </div>
 
@@ -133,8 +133,8 @@
                                     <br><br>
                                     <p>Subject: {{lesson.title}}</p>
                                     <p>Location: {{lesson.location}}</p>
-                                    <p>Added Spaces: {{lesson.spaces}}</p>
-                                    <p>Price: {{lesson.price*lesson.spaces | currency}}</p>
+                                    <p>Added availableSpace: {{lesson.availableSpace}}</p>
+                                    <p>Price: {{lesson.price*lesson.availableSpace | currency}}</p>
                                 </span>
                             </div>
 
@@ -259,11 +259,11 @@
                     var lessonLocation = lesson.location;
                     var lessonPrice = lesson.price;
                     var lessonImage = lesson.image;
-                    var addedSpaces = 1;
+                    var addedavailableSpace = 1;
                     for (var index in this.cart) {
                         var cartItem = this.cart[index];
                         if (lesson.id === cartItem.id) {
-                            addedSpaces = parseInt(cartItem.spaces) + 1;
+                            addedavailableSpace = parseInt(cartItem.availableSpace) + 1;
                             itemInCart = this.cart.indexOf(cartItem);
                             this.cart.splice(itemInCart, 1);
                         }
@@ -273,7 +273,7 @@
                         location: lessonLocation,
                         price: lessonPrice,
                         image: lessonImage,
-                        spaces: addedSpaces,
+                        availableSpace: addedavailableSpace,
                         id: lesson.id
                     }
                     this.cart.push(itemToAdd);
@@ -281,8 +281,8 @@
                 },
 
                 removeFromCart(lesson) {
-                    lesson.spaces--;
-                    if (lesson.spaces <= 0) {
+                    lesson.availableSpace--;
+                    if (lesson.availableSpace <= 0) {
                         var i = this.cart.indexOf(lesson);
                         this.cart.splice(i, 1);
                     }
@@ -312,9 +312,35 @@
                     alert('Order Submitted!')
                 },
 
-                async updateSpaces(updateLesson) {
-                    let updateLessons = await fetch('https://cst-3145-cw.herokuapp.com/collection/Products', {
-                        method: 'PUT',
+
+                async put(updateLess, id) {
+                    try {
+                        let response = await fetch('https://cst-3145-cw.herokuapp.com/collection/Products/' + id, {
+                            method: 'PUT',
+                            body: JSON.stringify(updateLess)
+                        }).then(updateLess => console.log(updateLess)).then(console.log("products collcts updated successfully"))
+                            .catch(err => console.log(err));;
+
+                        let newData = await response;
+                        return newData;
+                        console.log(newData)
+                    } catch (error) {
+                        console.log(error);
+                    }
+                },
+
+                checkout() {
+
+
+
+                    let orders = {
+                        checkoutName: document.getElementById("name").value,
+                        checkoutPhone: document.getElementById("phone").value,
+                        cartProduct: this.cart,
+                    }
+
+                    fetch('https://cst-3145-cw.herokuapp.com/collection/Orders', {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -322,39 +348,20 @@
                         cache: "no-store",
                         body: JSON.stringify(orders),
                     })
-                },
-
-
-                async checkout() {
-                    let orders = {
-                        checkoutName: document.getElementById("name").value,
-                        checkoutPhone: document.getElementById("phone").value,
-                        cartProduct: this.cart,
-                    }
-                    try {
-                        let process = await fetch('https://cst-3145-cw.herokuapp.com/collection/Orders', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            mode: "cors",
-                            cache: "no-store",
-                            body: JSON.stringify(orders),
+                        .then(response => response.json())
+                        .then(responseJSON => {
+                            let updateLess = []
+                            for (let element of this.cart) {
+                                updateLess.push({ availableSpace: this.cart[element].availableSpace });
+                                this.put(updateLess, this.cart[element]._id)
+                            }
+                            //console.log(this.cart);
                         })
-                        let endProcess = await process;
-                        let updateData = {
-                            availableSpace: this.cart
-                        }
-
-                        updateSpaces(updateData);
-                    } catch (error) {
-                        console.log(error);
-                    }
-
-
-                    // console.log(orders);
-
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 },
+
 
                 checkForm() {
                     let name = this.name;
@@ -372,7 +379,7 @@
             },
 
             created: function () {
-                // replace the URL to your Heroku app and route
+
                 fetch('https://cst-3145-cw.herokuapp.com/collection/Products').then(
                     function (response) {
                         response.json().then(
